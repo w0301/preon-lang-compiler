@@ -83,6 +83,8 @@ parseExpression =
     <|>
     try (spaces >> parseNoArgFunctionCall)
     <|>
+    try (spaces >> parseConstantCall)
+    <|>
     try (parenthesis parseFunctionCall)
     <|>
     try (parenthesis parseExpression)
@@ -99,6 +101,11 @@ parseNoArgFunctionCall :: Parser Expression
 parseNoArgFunctionCall = do
   name <- parseFunctionName
   return $ FunctionCall name []
+
+parseConstantCall :: Parser Expression
+parseConstantCall = do
+  constant <- parseConstant
+  return $ ConstantCall constant
 
 parseFunctionCall :: Parser Expression
 parseFunctionCall = do
@@ -127,3 +134,25 @@ parseTypeCreatorName = do
   firstLetter <- upper
   rest <- many (letter <|> digit)
   return $ [firstLetter] ++ rest
+
+
+-- Statements parsing --
+
+data Statement
+  = VariableAssignment String Expression
+  | ReturnStatement Expression
+  deriving Show
+
+
+-- Definitions parsing --
+
+data Definition
+  = AbstractObjectDefinition String [FieldDefinition]
+  | ObjectDefinition String [FieldDefinition]
+  deriving Show
+
+data FieldDefinition
+  = NormalField String [Statement]
+  | ConstantField String [Statement]
+  | FunctionField String [Statement]
+  deriving Show

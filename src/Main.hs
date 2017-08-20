@@ -11,4 +11,4 @@ testParser input = case parse parseExpression "expression" input of
 
 main :: IO ()
 main = do
-  putStrLn ("Parse: " ++ testParser "( test1 (test2 (test3 t) tt) )")
+  putStrLn ("Parse: " ++ testParser "( test1 (test2 (test3 if t then 5 else 10) tt) )")
