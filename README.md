@@ -4,7 +4,7 @@
 This document describes proposal for new language which will be implemented
 as part of diploma thesis.
 
-New language called **Preon** will provide mixtures of object-oriented and
+New language called **Preon** will provide mixture of object-oriented and
 functional language features. In fact it will be *pure functional* language
 in which everything is polymorphic object.
 
@@ -62,9 +62,23 @@ following syntax:
 ```
 newFoo = Foo { field1 = || -> 15 , field1Alternative = 16 }
 ```
+This syntax also shows that every constant value is automatically converted to constant
+function which returns that value.
 
-**TODO : some more info here... something that types do not exist in Preon,
-and signature means that instance of this object can be passed here/is returned**
+Object fields altering is main concept in Preon language. Every new object is created
+by altering one of the already existing objects. Actually declaring of new object
+as described in previous section is also alternation of object 'Object' which is
+allowed to add new fields.
+
+This basically means that rather than talking about types in Preon language
+it is more accurate to talk about "an object that was created by altering object
+of this name". For example following function signature can be read as "Function
+*func* takes as first argument any object that was created by altering object *Foo*,
+as second argument any object that was created by altering object *Bar* and returns
+object that is created by altering object *String*":
+```
+func : Foo -> Bar -> String
+```
 
 ## Constant object fields
 
@@ -89,11 +103,37 @@ object Foo
 end
 ```
 
+## Abstract objects
+
+TODO
+
 ## Object inheritance and field overriding
 
 TODO
 
 ## Generic objects
+
+TODO
+
+## Special 'This' and 'this' object
+
+TODO
+
+## Syntax primitives
+
+### Conditions
+
+TODO
+
+### Function calls
+
+TODO
+
+### Operators
+
+TODO
+
+# Compiler target
 
 TODO
 
@@ -128,12 +168,12 @@ languages. Two of these are:
   live while there are any actions still to do and therefore messages which might change
   *state* somehow.
 
-In my diploma thesis I will focus on implementing mentioned *State-Update architecture*
+In my diploma thesis I will focus on implementing *State-Update architecture*
 in newly created Preon language. Besides that I will implement automatic parallelization
 of calling *state-update function* for different incoming messages which do not
 alter same portion of the *state*. To make this possible compiler of Preon language
 has to perform some static analysis of the code which makes it possible to find out
-during runtime if two messages are in conflict or not.
+if two messages are in conflict or not during runtime.
 
 Proposal of implementation of such architecture follows:
 ```
