@@ -12,3 +12,9 @@ parenthesis subParser = do
   res <- subParser
   spaces >> char ')' >> spaces
   return res
+
+simpleName :: Parser String
+simpleName = do
+  firstChar <- letter
+  restChars <- (many alphaNum)
+  return $ [firstChar] ++ restChars

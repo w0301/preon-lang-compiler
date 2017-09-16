@@ -3,7 +3,9 @@ module Main where
 import System.IO
 import Text.Parsec
 
+import Parser.Program
 import Parser.Expressions
+import Parser.Declarations
 
 testParser :: String -> String
 testParser input = case parse parseExpression "expression" input of
