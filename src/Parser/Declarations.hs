@@ -1,5 +1,7 @@
 module Parser.Declarations where
 
+import Data.Maybe
+
 import Text.Parsec
 import Text.Parsec.Expr
 import Text.Parsec.Char
@@ -8,6 +10,7 @@ import Text.Parsec.String
 
 import Parser.Common
 import Parser.Expressions
+
 
 data ObjectDeclarationName
   = SimpleObjectDeclarationName String
@@ -64,7 +67,7 @@ data FieldSignature
 parseFieldSignature :: Parser FieldSignature
 parseFieldSignature = do
   firstDeclaration <- parseDeclarationName
-  restDeclarations <- (many (spaces >> string "->" >> spaces >> parseDeclarationName))
+  restDeclarations <- (many (try (spaces >> string "->" >> spaces >> parseDeclarationName)))
   return $ let declarations = [firstDeclaration] ++ restDeclarations
            in FieldSignature (take ((length declarations) - 1) declarations) (last declarations)
 
@@ -84,11 +87,11 @@ parseExpressionFieldBody :: Parser FieldBody
 parseExpressionFieldBody = do
   spaces >> char '=' >> spaces
   spaces >> char '|' >> spaces
-  firstName <- simpleName
-  restNames <- (many (spaces >> char ',' >> spaces >> simpleName))
-  spaces >> char '|' >> spaces
+  firstName <- optionMaybe simpleName
+  restNames <- (many (try (spaces >> char ',' >> spaces >> simpleName)))
+  spaces >> char '|' >> spaces >> string "->" >> spaces
   expr <- parseExpression
-  return $ ExpressionFieldBody ([firstName] ++ restNames) expr
+  return $ ExpressionFieldBody ((maybeToList firstName) ++ restNames) expr
 
 
 data FieldDeclaration
@@ -127,7 +130,7 @@ parseObjectDeclaration :: Parser ObjectDeclaration
 parseObjectDeclaration =
   (try parseAbstractObjectDeclaration)
   <|>
-  (try parseConcreteObjectDeclaration)
+  parseConcreteObjectDeclaration
 
 parseAbstractObjectDeclaration :: Parser ObjectDeclaration
 parseAbstractObjectDeclaration = do

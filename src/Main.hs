@@ -8,10 +8,10 @@ import Parser.Expressions
 import Parser.Declarations
 
 testParser :: String -> String
-testParser input = case parse parseExpression "expression" input of
+testParser input = case parse parseProgram "program" input of
     Left err -> "No match: " ++ show err
     Right val -> "Found value: " ++ show val
 
 main :: IO ()
 main = do
-  putStrLn ("Parse: " ++ testParser "( test1 (test2 (test3 if t then 5 else 10) tt) )")
+  putStrLn ("Parse: " ++ testParser "object Foo end object Bar<T1, T2> \nf : Int -> Foo = |a, b, c| -> (asd)  \n end")
